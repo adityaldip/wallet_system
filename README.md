@@ -37,7 +37,7 @@ Ensure you have the following installed:
    ```bash
     rails db:create
     rails db:migrate
-    ails db:seed
+    rails db:seed
 
 4. Set up environment variables:
 
