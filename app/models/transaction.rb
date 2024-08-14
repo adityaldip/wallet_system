@@ -7,49 +7,48 @@ class Transaction < ApplicationRecord
 
   enum transaction_type: { credit: 0, debit: 1 }
 
-  before_create :perform_transaction
+  after_create :perform_transaction
 
   private
 
   def validate_wallets
-    if credit? && source_wallet.present?
-      errors.add(:source_wallet, 'should be nil for credits')
-    elsif debit? && target_wallet.present?
-      errors.add(:target_wallet, 'should be nil for debits')
-    elsif credit? && target_wallet.nil?
-      errors.add(:target_wallet, 'must be present for credits')
-    elsif debit? && source_wallet.nil?
-      errors.add(:source_wallet, 'must be present for debits')
+    if credit?
+      errors.add(:source_wallet, 'should be nil for credits') if source_wallet.present?
+      errors.add(:target_wallet, 'must be present for credits') if target_wallet.nil?
+    elsif debit?
+      errors.add(:target_wallet, 'should be nil for debits') if target_wallet.present?
+      errors.add(:source_wallet, 'must be present for debits') if source_wallet.nil?
+      if source_wallet && amount > source_wallet.balance
+        errors.add(:amount, 'exceeds available balance')
+      end
     end
   end
 
   def perform_transaction
     ActiveRecord::Base.transaction do
       if credit?
-        raise ActiveRecord::Rollback unless update_target_wallet_balance
+        update_target_wallet_balance
       elsif debit?
-        raise ActiveRecord::Rollback unless update_source_wallet_balance
+        update_source_wallet_balance
       end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error("Transaction failed: #{e.message}")
+    errors.add(:base, 'Transaction could not be completed. Please try again.')
+    throw(:abort) # Ensure the transaction does not commit
   end
 
   def update_target_wallet_balance
-    new_balance = target_wallet.balance + amount
-    if target_wallet.update(balance: new_balance)
-      true
-    else
-      Rails.logger.error("Failed to update target wallet balance: #{target_wallet.errors.full_messages}")
-      false
+    target_wallet.with_lock do
+      new_balance = target_wallet.balance + amount
+      target_wallet.update!(balance: new_balance)
     end
   end
 
   def update_source_wallet_balance
-    new_balance = source_wallet.balance - amount
-    if source_wallet.update(balance: new_balance)
-      true
-    else
-      Rails.logger.error("Failed to update source wallet balance: #{source_wallet.errors.full_messages}")
-      false
+    source_wallet.with_lock do
+      new_balance = source_wallet.balance - amount
+      source_wallet.update!(balance: new_balance)
     end
   end
 end

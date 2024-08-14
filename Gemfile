@@ -58,3 +58,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors', require: 'rack/cors'  # For API CORS settings
 gem 'jwt'
 gem 'dotenv-rails', groups: [:development, :test]
+
+group :development, :test do
+  gem 'rspec-rails'
+end

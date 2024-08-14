@@ -6,9 +6,7 @@ This is a Ruby on Rails API application for managing wallet transactions between
 
 - Ruby 3.0.0
 - Rails 6.1.7.8
-- PostgreSQL or MySQL for the database
-- Redis (for caching or background jobs, if applicable)
-- RabbitMQ (if using message queuing)
+- MySQL for the database
 
 ## Getting Started
 
@@ -18,9 +16,8 @@ Ensure you have the following installed:
 
 - [Ruby 3.0.0](https://www.ruby-lang.org/en/documentation/installation/)
 - [Bundler](https://bundler.io/) (to manage gem dependencies)
-- [PostgreSQL](https://www.postgresql.org/download/) or [MySQL](https://dev.mysql.com/downloads/installer/) (as your database)
-- [Redis](https://redis.io/download) (optional, based on your usage)
-- [RabbitMQ](https://www.rabbitmq.com/download.html) (optional, based on your usage)
+- [MySQL]
+
 
 ### Installation
 
@@ -32,16 +29,19 @@ Ensure you have the following installed:
 
 2. Install the dependencies:
 
+   ```bash
     bundle install
 
 3. Set up the database:
 
+   ```bash
     rails db:create
     rails db:migrate
     ails db:seed
 
 4. Set up environment variables:
 
+   ```bash
     DATABASE_USERNAME=your_db_username
     DATABASE_PASSWORD=your_db_password
     SECRET_KEY_BASE=your_secret_key_base

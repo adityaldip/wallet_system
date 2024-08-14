@@ -4,7 +4,9 @@ Rails.application.routes.draw do
     delete 'logout', to: 'sessions#destroy'
 
     get 'me', to: 'users#show'
-
+    resources :teams, only: [:index]
+    resources :stocks, only: [:index]
+    
     resources :transactions, only: [:create, :index]
     get 'transactions/user', to: 'transactions#user_transactions'
   end
