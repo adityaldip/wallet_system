@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  walletable: one
+  walletable_type: Walletable
+  balance: 
+  balance: 
+
+two:
+  walletable: two
+  walletable_type: Walletable
+  balance: 
+  balance: 

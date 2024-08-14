@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  source_wallet: one
+  target_wallet: one
+  amount: 
+  amount: 
+  transaction_type: 1
+
+two:
+  source_wallet: two
+  target_wallet: two
+  amount: 
+  amount: 
+  transaction_type: 1
